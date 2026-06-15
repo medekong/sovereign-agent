@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGNAL — Case 1: Dead Signal</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0d1117;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+#app{background:#0d1117;min-height:100vh;color:#e6edf3;font-size:15px;line-height:1.6;display:flex;flex-direction:column;max-width:480px;margin:0 auto;position:relative}
+#header{background:#161b22;border-bottom:1px solid #21262d;padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:10}
+#header .logo{font-size:18px;font-weight:700;letter-spacing:2px;color:#378ADD}
+#header .case-label{font-size:11px;color:#7d8590;letter-spacing:1px;text-transform:uppercase;margin-left:auto}
+#progress{height:3px;background:#21262d;position:sticky;top:49px;z-index:10}
+#progress-bar{height:100%;background:#378ADD;transition:width 0.5s ease;width:0%}
+#scene-area{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;padding-bottom:180px}
+.msg{display:flex;gap:8px;align-items:flex-start;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+.av-maya{background:#185FA5;color:#B5D4F4}
+.av-daz{background:#3B6D11;color:#C0DD97}
+.av-priya{background:#533489;color:#CECBF6}
+.av-sys{background:#21262d;color:#7d8590}
+.av-you{background:#378ADD;color:#fff}
+.bubble{background:#161b22;border:1px solid #21262d;border-radius:12px;padding:10px 14px;max-width:85%;font-size:14px;color:#c9d1d9}
+.bubble .sender{font-size:11px;font-weight:600;margin-bottom:4px}
+.bubble.maya .sender{color:#378ADD}
+.bubble.daz .sender{color:#639922}
+.bubble.priya .sender{color:#7F77DD}
+.bubble.system{background:transparent;border:none;color:#7d8590;font-size:13px;font-style:italic;padding:4px 0}
+.bubble.you-said{background:#1a3550;border-color:#185FA5;color:#e6edf3}
+.scene-header{background:#161b22;border:1px solid #21262d;border-radius:8px;padding:10px 14px;font-size:12px;color:#7d8590;display:flex;align-items:center;gap:8px}
+.scene-header strong{color:#c9d1d9;font-size:13px}
+#choice-area{background:#161b22;border-top:1px solid #21262d;padding:14px 16px;position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:10}
+#choice-area .prompt{font-size:12px;color:#7d8590;margin-bottom:10px;letter-spacing:0.5px;text-transform:uppercase}
+.choice-btn{width:100%;text-align:left;background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:10px 14px;color:#c9d1d9;font-size:13px;cursor:pointer;margin-bottom:8px;transition:all 0.15s;display:flex;gap:10px;align-items:flex-start;font-family:inherit;line-height:1.5}
+.choice-btn:hover{border-color:#378ADD;background:#0a1628;color:#e6edf3}
+.choice-btn:last-child{margin-bottom:0}
+.choice-btn .mark{font-size:11px;font-weight:700;color:#7d8590;min-width:22px;padding-top:1px;flex-shrink:0}
+.choice-btn .star-mark{color:#378ADD}
+.trust-pill{display:inline-block;font-size:10px;padding:2px 8px;border-radius:20px;margin-left:6px;font-weight:600}
+.trust-pos{background:#0f2b1a;color:#57ab5a;border:1px solid #1a4a2a}
+.trust-neg{background:#2b0f0f;color:#f47067;border:1px solid #4a1a1a}
+.trust-neu{background:#1c1f24;color:#7d8590;border:1px solid #30363d}
+#feedback-area{display:none;padding:20px;flex-direction:column;gap:14px;padding-bottom:40px}
+.q-block{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px}
+.q-block label{font-size:13px;color:#c9d1d9;display:block;margin-bottom:10px;font-weight:500;line-height:1.5}
+.q-block textarea{width:100%;background:#0d1117;border:1px solid #21262d;border-radius:6px;color:#e6edf3;font-size:13px;padding:8px 10px;resize:none;font-family:inherit;min-height:70px;line-height:1.5}
+.q-block textarea:focus{outline:none;border-color:#378ADD}
+.radio-group{display:flex;gap:8px;flex-wrap:wrap}
+.radio-opt{background:#0d1117;border:1px solid #21262d;border-radius:6px;padding:6px 12px;font-size:12px;color:#7d8590;cursor:pointer;transition:all 0.15s;user-select:none}
+.radio-opt.selected,.radio-opt:hover{border-color:#378ADD;color:#378ADD;background:#0a1628}
+#submit-btn{background:#185FA5;color:#fff;border:none;border-radius:8px;padding:14px;font-size:14px;font-weight:600;cursor:pointer;width:100%;letter-spacing:0.5px;transition:background 0.15s;font-family:inherit}
+#submit-btn:hover{background:#378ADD}
+#end-screen{display:none;padding:40px 20px;text-align:center;flex-direction:column;align-items:center;gap:20px;min-height:100vh;justify-content:center}
+#end-screen .big{font-size:36px;font-weight:700;color:#378ADD;letter-spacing:4px}
+#end-screen .sub{color:#7d8590;font-size:14px;max-width:300px;line-height:1.6}
+.trust-summary{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:16px;width:100%;text-align:left}
+.trust-summary-title{font-size:11px;color:#7d8590;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase}
+.trust-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #21262d;font-size:13px}
+.trust-row:last-child{border-bottom:none}
+.trust-row .tname{color:#c9d1d9;font-weight:500;min-width:50px}
+.trust-bar-wrap{flex:1;margin:0 12px;height:4px;background:#21262d;border-radius:2px;overflow:hidden}
+.trust-bar-fill{height:100%;background:#378ADD;border-radius:2px;transition:width 1s ease}
+.trust-val{font-size:11px;font-weight:600;min-width:50px;text-align:right}
+.tv-good{color:#57ab5a}.tv-mid{color:#e3b341}.tv-low{color:#f47067}
+.next-case{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:16px;width:100%;text-align:left}
+.next-case .nc-label{font-size:11px;color:#7d8590;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.next-case .nc-title{font-size:15px;font-weight:600;color:#378ADD}
+.next-case .nc-desc{font-size:13px;color:#7d8590;margin-top:4px;line-height:1.5}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="header">
+    <div class="logo">SIGNAL</div>
+    <div class="case-label">Case 1 — Dead Signal</div>
+  </div>
+  <div id="progress"><div id="progress-bar"></div></div>
+  <div id="scene-area"></div>
+  <div id="choice-area">
+    <div class="prompt">What do you say?</div>
+    <div id="choices"></div>
+  </div>
+  <div id="feedback-area">
+    <div class="q-block">
+      <label>1. How would you describe this game to a friend?</label>
+      <textarea id="q1" placeholder="Just type anything..."></textarea>
+    </div>
+    <div class="q-block">
+      <label>2. Was there a moment where you weren't sure what to pick?</label>
+      <textarea id="q2" placeholder="Which scene? Why?"></textarea>
+    </div>
+    <div class="q-block">
+      <label>3. Was there anything your character felt like they couldn't say?</label>
+      <textarea id="q3" placeholder="Any option that was missing?"></textarea>
+    </div>
+    <div class="q-block">
+      <label>4. How would you rate it overall?</label>
+      <div class="radio-group" id="rating-group">
+        <div class="radio-opt" data-val="1">1 — Boring</div>
+        <div class="radio-opt" data-val="2">2</div>
+        <div class="radio-opt" data-val="3">3 — Okay</div>
+        <div class="radio-opt" data-val="4">4</div>
+        <div class="radio-opt" data-val="5">5 — Really good</div>
+      </div>
+    </div>
+    <div class="q-block">
+      <label>5. Would you keep playing if there were more cases?</label>
+      <div class="radio-group" id="continue-group">
+        <div class="radio-opt" data-val="yes">Definitely</div>
+        <div class="radio-opt" data-val="maybe">Maybe</div>
+        <div class="radio-opt" data-val="no">Probably not</div>
+      </div>
+    </div>
+    <button id="submit-btn" onclick="submitFeedback()">Submit &amp; see results</button>
+  </div>
+  <div id="end-screen">
+    <div class="big">SIGNAL</div>
+    <p class="sub">Case 1: Dead Signal complete. Here's how your relationships ended up.</p>
+    <div class="trust-summary">
+      <div class="trust-summary-title">Trust built</div>
+      <div id="trust-rows"></div>
+    </div>
+    <div class="next-case">
+      <div class="nc-label">Coming next</div>
+      <div class="nc-title">Case 2 — The Frequency</div>
+      <div class="nc-desc">What Priya found on that drive is bigger than one teacher.</div>
+    </div>
+    <p style="font-size:12px;color:#4d5562;margin-top:8px">Thanks for playing. Your feedback has been recorded.</p>
+  </div>
+</div>
+
+<script>
+const trust={maya:50,daz:50,priya:50};
+const choiceLog=[];
+let rating=null,continueAnswer=null;
+
+function adj(c,d){trust[c]=Math.max(0,Math.min(100,trust[c]+d));}
+
+const scenes=[
+  {id:'s1',label:'Scene 1 — The Briefing',progress:10,
+   messages:[
+     {who:'sys',text:'Team chat. Late afternoon.'},
+     {who:'daz',text:'anyone else notice the wifi dying every tuesday and thursday 2nd period'},
+     {who:'daz',text:'like clockwork'},
+     {who:'maya',text:'yeah i thought it was just the school routers being garbage'},
+     {who:'daz',text:'nah its too clean. same time every week'},
+     {who:'maya',text:'so someone\'s doing it deliberately'},
+     {who:'daz',text:'either that or mr harris has a really consistent microwave habit lol'},
+     {who:'maya',text:'you\'re the one who first flagged this. what do you actually think?'},
+   ],
+   choices:[
+     {mark:'★ A',text:'I think it\'s deliberate. The pattern\'s too tight to be hardware.',star:true,fn:()=>{adj('maya',12);return{con:'Maya takes you seriously.',pill:'trust +maya',pos:true}}},
+     {mark:'B',text:'Could still be interference. Let\'s not assume.',fn:()=>({con:'Maya pushes back gently.',pill:'neutral',pos:null})},
+     {mark:'C',text:'Harris does seem weird. Could be him.',fn:()=>{adj('maya',-8);return{con:'Maya clocks you\'re guessing.',pill:'trust −maya',pos:false}}},
+     {mark:'D',text:'I don\'t know yet. We need more before we guess.',fn:()=>{adj('maya',5);return{con:'Maya respects the caution.',pill:'trust +maya',pos:true}}},
+   ]},
+  {id:'s2',label:'Scene 2 — Field Phase',progress:28,
+   messages:[
+     {who:'sys',text:'Next day. School corridor. You spent the morning mapping the drop times. You found a custom device on the router panel in the caretaker\'s cupboard. Now you approach Priya at her locker.'},
+     {who:'priya',text:'hey.'},
+   ],
+   choices:[
+     {mark:'★ A',text:'I mapped the drop times last night. Then I found the device on the router panel this morning. I think you know about both.',star:true,fn:()=>{adj('priya',18);return{con:'Priya recalibrates. She didn\'t expect that.',pill:'trust +priya',pos:true}}},
+     {mark:'B',text:'Can I ask you something about the wifi drops.',fn:()=>({con:'She answers carefully. Neutral.',pill:'neutral',pos:null})},
+     {mark:'C',text:'Daz thinks it might be Okafor. You\'ve got geography with him.',fn:()=>{adj('priya',-15);return{con:'Her jaw tightens slightly.',pill:'trust −priya',pos:false}}},
+     {mark:'D',text:'Hey. You alright.',fn:()=>{adj('priya',4);return{con:'Small warmth. No case progress.',pill:'trust +priya',pos:true}}},
+   ]},
+  {id:'s3a',label:'Scene 3 — Team Check-in',progress:46,
+   messages:[
+     {who:'sys',text:'That evening. Video call. Daz joins two minutes late.'},
+     {who:'daz',text:'yo. what did i miss'},
+     {who:'maya',text:'We were about to go through what we found today.'},
+     {who:'daz',text:'it\'s Priya. I mean come on. she\'s in that class, she\'s got all that tech stuff going on. it\'s obviously her.'},
+     {who:'maya',text:'having tech interests doesn\'t make someone a suspect Daz'},
+     {who:'maya',text:'(to you) — you talked to her today. what did you get?'},
+   ],
+   choices:[
+     {mark:'★ A',text:'Maybe. But if we go at her like she\'s already guilty and we\'re wrong — she shuts down. I\'ve got a better play.',star:true,fn:()=>{adj('maya',10);adj('daz',8);return{con:'Daz: "...what\'s the play." He\'s curious now.',pill:'trust +maya +daz',pos:true}}},
+     {mark:'B',text:'We don\'t know that yet. Let\'s not lock in.',fn:()=>({con:'Reasonable. Daz still thinks he\'s right.',pill:'neutral',pos:null})},
+     {mark:'C',text:'Could be. But why would she? What\'s her motive.',fn:()=>({con:'Daz: "does she need one?" Neutral.',pill:'neutral',pos:null})},
+     {mark:'D',text:'(say nothing — let Maya handle it)',fn:()=>{adj('maya',-6);return{con:'You opt out. Maya notices.',pill:'trust −maya',pos:false}}},
+   ]},
+  {id:'s3b',label:'Scene 3 — Daz moment',progress:58,
+   messages:[
+     {who:'sys',text:'A moment of quiet while Maya checks the wifi logs.'},
+     {who:'daz',text:'she\'s just kind of hard to talk to right. like it\'s not just me.'},
+   ],
+   choices:[
+     {mark:'★ A',text:'She\'s private. That\'s different from hard to talk to. You just haven\'t given her a reason to open up yet.',star:true,fn:()=>{adj('daz',15);return{con:'Daz goes quiet. Then: "...fair." He actually absorbs it.',pill:'trust +daz',pos:true}}},
+     {mark:'B',text:'She\'s fine once you get past the first layer.',fn:()=>{adj('daz',5);return{con:'Daz: "how many layers?" Mild curiosity.',pill:'trust +daz',pos:true}}},
+     {mark:'C',text:'Maybe she just doesn\'t vibe with everyone.',fn:()=>({con:'He accepts it. Nothing changes.',pill:'neutral',pos:null})},
+     {mark:'D',text:'Yeah she is a bit.',fn:()=>{adj('maya',-6);return{con:'Maya hears that.',pill:'trust −maya',pos:false}}},
+   ]},
+  {id:'s4a',label:'Scene 4 — The Library',progress:72,
+   messages:[
+     {who:'sys',text:'The library. After hours. Priya is alone, working. She looks up when you arrive — and doesn\'t look surprised.'},
+     {who:'priya',text:'I wondered if you\'d come.'},
+     {who:'priya',text:'I did it. The jamming. I built the device. I\'m not going to pretend I didn\'t.'},
+   ],
+   choices:[
+     {mark:'★ A',text:'I figured. And I figured you had a reason. Before you explain — I\'m not here to report you.',star:true,fn:()=>{adj('priya',18);return{con:'She goes still. Something releases in her.',pill:'trust +priya',pos:true}}},
+     {mark:'B',text:'Okay. Walk me through it.',fn:()=>({con:'Factual exchange. She explains.',pill:'neutral',pos:null})},
+     {mark:'C',text:'You know this could get serious for you.',fn:()=>{adj('priya',-12);return{con:'Her expression flattens. She calculates how much to share.',pill:'trust −priya',pos:false}}},
+     {mark:'D',text:'How did you even build something like that.',fn:()=>{adj('priya',5);return{con:'An unexpected crack of personality.',pill:'trust +priya',pos:true}}},
+   ]},
+  {id:'s4b',label:'Scene 4 — The pivot',progress:86,
+   messages:[
+     {who:'priya',text:'Six weeks ago I stayed late to get a book. Okafor\'s door was open. He had a laptop out. He was watching footage from a camera he\'d set up in the room himself.'},
+     {who:'priya',text:'Pointing at one student. Just her. Rewinding. Watching again.'},
+     {who:'priya',text:'I didn\'t have proof. I didn\'t think anyone would believe me. So I did what I could do alone.'},
+     {who:'priya',text:'I\'m still doing it alone.'},
+   ],
+   choices:[
+     {mark:'★ A',text:'If that camera stores locally, the footage goes somewhere. I can get into the system without touching his hardware. Give me 48 hours and you\'d have actual evidence.',star:true,fn:()=>{adj('priya',20);return{con:'She goes quiet. Then hands you the technical blueprint. You\'re collaborating now.',pill:'trust +priya',pos:true}}},
+     {mark:'★ B',text:'You\'ve been carrying this six weeks. That stops now. Tell me what you\'ve already tried and I\'ll pick up from there.',star:true,fn:()=>{adj('priya',18);return{con:'She hands over the thread. Different route, same outcome.',pill:'trust +priya',pos:true}}},
+     {mark:'C',text:'You shouldn\'t have to do this alone. That\'s what the team is for.',fn:()=>({con:'"The team." She\'s not sure they\'d know what to do. Neutral.',pill:'neutral',pos:null})},
+     {mark:'D',text:'Have you thought about going to another teacher?',fn:()=>({con:'Dead end. She\'s already thought about it.',pill:'neutral',pos:null})},
+   ]},
+];
+
+function getConsequenceScene(){
+  const p=trust.priya;
+  if(p>=75)return{label:'High initiative',msgs:[
+    {who:'sys',text:'That night. A message from Priya.'},
+    {who:'priya',text:'the KX-mini syncs every 15 minutes. if you spoof the wifi between 11pm and 11:15 the sync fails and buffers locally. that gives you a window.'},
+    {who:'priya',text:'I\'ll handle the spoof if you handle the extraction.'},
+    {who:'priya',text:'don\'t tell Daz yet.'},
+    {who:'sys',text:'She\'s not asking for help anymore. She\'s coordinating.'},
+    {who:'maya',text:'What did you say to her. She seems... different. Like less alone or something. I don\'t know.'},
+  ]};
+  if(p>=50)return{label:'Mid initiative',msgs:[
+    {who:'sys',text:'Three days later.'},
+    {who:'priya',text:'thanks for sorting it.'},
+    {who:'sys',text:'The case is handled. Officially. Slowly. Priya is grateful but unchanged. Three days later she\'s working alone again.'},
+    {who:'maya',text:'She talked to you though. That\'s more than she does with most people.'},
+  ]};
+  return{label:'Low initiative',msgs:[
+    {who:'sys',text:'Priya thanks you politely and handles everything herself. Again.'},
+    {who:'daz',text:'mystery solved. easy.'},
+    {who:'maya',text:'Did she seem okay to you.'},
+    {who:'sys',text:'You didn\'t notice. That\'s the consequence.'},
+  ]};
+}
+
+const sa=document.getElementById('scene-area');
+const ca=document.getElementById('choice-area');
+const ch=document.getElementById('choices');
+let currentScene=0;
+
+function addMsg(who,text){
+  const el=document.createElement('div');
+  el.className='msg';
+  const labels={maya:'Maya',daz:'Daz',priya:'Priya',you:'You'};
+  const avClass={maya:'av-maya',daz:'av-daz',priya:'av-priya',you:'av-you',sys:'av-sys'};
+  const initials={maya:'M',daz:'D',priya:'P',you:'Y',sys:'·'};
+  if(who==='sys'){
+    el.innerHTML=`<div class="bubble system">${text}</div>`;
+  } else {
+    const isYou=who==='you';
+    el.style.flexDirection=isYou?'row-reverse':'row';
+    el.innerHTML=`<div class="avatar ${avClass[who]}">${initials[who]}</div><div class="bubble ${who}${isYou?' you-said':''}">${isYou?'':`<div class="sender">${labels[who]}</div>`}${text}</div>`;
+  }
+  sa.appendChild(el);
+  sa.scrollTop=sa.scrollHeight;
+}
+
+function addSceneHeader(label){
+  const el=document.createElement('div');
+  el.className='scene-header';
+  el.innerHTML=`<i class="ti ti-map-pin" aria-hidden="true" style="font-size:14px;color:#378ADD"></i><strong>${label}</strong>`;
+  sa.appendChild(el);
+}
+
+function showScene(idx){
+  if(idx>=scenes.length){showConsequence();return;}
+  currentScene=idx;
+  const s=scenes[idx];
+  document.getElementById('progress-bar').style.width=s.progress+'%';
+  addSceneHeader(s.label);
+  let i=0;
+  function next(){
+    if(i<s.messages.length){const m=s.messages[i++];addMsg(m.who,m.text);setTimeout(next,300);}
+    else showChoices(s.choices,idx);
+  }
+  setTimeout(next,200);
+}
+
+function showChoices(choices,sceneIdx){
+  ch.innerHTML='';
+  choices.forEach(c=>{
+    const btn=document.createElement('button');
+    btn.className='choice-btn';
+    btn.innerHTML=`<span class="mark ${c.star?'star-mark':''}">${c.mark}</span><span>${c.text}</span>`;
+    btn.onclick=()=>choose(c,sceneIdx);
+    ch.appendChild(btn);
+  });
+}
+
+function choose(c,sceneIdx){
+  ch.innerHTML='';
+  document.querySelector('.prompt').textContent='';
+  addMsg('you',c.text);
+  const result=c.fn();
+  choiceLog.push({scene:scenes[sceneIdx].label,choice:c.mark,text:c.text,consequence:result.con});
+  setTimeout(()=>{
+    const pill=result.pill?`<span class="trust-pill ${result.pos===true?'trust-pos':result.pos===false?'trust-neg':'trust-neu'}">${result.pill}</span>`:'';
+    const el=document.createElement('div');
+    el.className='msg';
+    el.innerHTML=`<div class="bubble system">${result.con}${pill}</div>`;
+    sa.appendChild(el);
+    sa.scrollTop=sa.scrollHeight;
+    setTimeout(()=>showScene(sceneIdx+1),900);
+  },400);
+}
+
+function showConsequence(){
+  document.getElementById('progress-bar').style.width='95%';
+  const c=getConsequenceScene();
+  addSceneHeader('Scene 5 — Consequence: '+c.label);
+  let i=0;
+  function next(){
+    if(i<c.msgs.length){const m=c.msgs[i++];addMsg(m.who,m.text);setTimeout(next,380);}
+    else setTimeout(showFeedback,1000);
+  }
+  setTimeout(next,300);
+}
+
+function showFeedback(){
+  document.getElementById('progress-bar').style.width='100%';
+  ca.style.display='none';
+  document.getElementById('feedback-area').style.display='flex';
+  sa.style.paddingBottom='16px';
+  document.querySelectorAll('.radio-opt').forEach(el=>{
+    el.addEventListener('click',function(){
+      const g=this.closest('.radio-group');
+      g.querySelectorAll('.radio-opt').forEach(o=>o.classList.remove('selected'));
+      this.classList.add('selected');
+      if(g.id==='rating-group')rating=this.dataset.val;
+      if(g.id==='continue-group')continueAnswer=this.dataset.val;
+    });
+  });
+  sa.scrollTop=sa.scrollHeight;
+}
+
+function submitFeedback(){
+  const summary={trust,choices:choiceLog,q1:document.getElementById('q1').value,q2:document.getElementById('q2').value,q3:document.getElementById('q3').value,rating,wouldContinue:continueAnswer};
+  console.log('SIGNAL PLAYTEST DATA:',JSON.stringify(summary,null,2));
+  document.getElementById('feedback-area').style.display='none';
+  const es=document.getElementById('end-screen');
+  es.style.display='flex';
+  const chars=[{name:'Maya',key:'maya'},{name:'Daz',key:'daz'},{name:'Priya',key:'priya'}];
+  document.getElementById('trust-rows').innerHTML=chars.map(c=>{
+    const v=trust[c.key];
+    const cls=v>=65?'tv-good':v>=45?'tv-mid':'tv-low';
+    const label=v>=65?'Strong':v>=45?'Building':'Distant';
+    return `<div class="trust-row"><span class="tname">${c.name}</span><div class="trust-bar-wrap"><div class="trust-bar-fill" style="width:${v}%"></div></div><span class="trust-val ${cls}">${label}</span></div>`;
+  }).join('');
+}
+
+showScene(0);
+</script>
+</body>
+</html>
