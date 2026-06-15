@@ -14,7 +14,7 @@ html,body{height:100%;background:#0d1117;font-family:-apple-system,BlinkMacSyste
 #header .case-label{font-size:11px;color:#7d8590;letter-spacing:1px;text-transform:uppercase;margin-left:auto}
 #progress{height:3px;background:#21262d;position:sticky;top:49px;z-index:10}
 #progress-bar{height:100%;background:#378ADD;transition:width 0.5s ease;width:0%}
-#scene-area{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;padding-bottom:180px}
+#scene-area{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;padding-bottom:280px}
 .msg{display:flex;gap:8px;align-items:flex-start;animation:fadeIn 0.3s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
@@ -152,7 +152,7 @@ const scenes=[
      {who:'maya',text:'you\'re the one who first flagged this. what do you actually think?'},
    ],
    choices:[
-     {mark:'★ A',text:'I think it\'s deliberate. The pattern\'s too tight to be hardware.',star:true,fn:()=>{adj('maya',12);return{con:'Maya takes you seriously.',pill:'trust +maya',pos:true}}},
+     {mark:'A',text:'I think it\'s deliberate. The pattern\'s too tight to be hardware.',star:true,fn:()=>{adj('maya',12);return{con:'Maya takes you seriously.',pill:'trust +maya',pos:true}}},
      {mark:'B',text:'Could still be interference. Let\'s not assume.',fn:()=>({con:'Maya pushes back gently.',pill:'neutral',pos:null})},
      {mark:'C',text:'Harris does seem weird. Could be him.',fn:()=>{adj('maya',-8);return{con:'Maya clocks you\'re guessing.',pill:'trust −maya',pos:false}}},
      {mark:'D',text:'I don\'t know yet. We need more before we guess.',fn:()=>{adj('maya',5);return{con:'Maya respects the caution.',pill:'trust +maya',pos:true}}},
@@ -163,7 +163,7 @@ const scenes=[
      {who:'priya',text:'hey.'},
    ],
    choices:[
-     {mark:'★ A',text:'I mapped the drop times last night. Then I found the device on the router panel this morning. I think you know about both.',star:true,fn:()=>{adj('priya',18);return{con:'Priya recalibrates. She didn\'t expect that.',pill:'trust +priya',pos:true}}},
+     {mark:'A',text:'I mapped the drop times last night. Then I found the device on the router panel this morning. I think you know about both.',star:true,fn:()=>{adj('priya',18);return{con:'Priya recalibrates. She didn\'t expect that.',pill:'trust +priya',pos:true}}},
      {mark:'B',text:'Can I ask you something about the wifi drops.',fn:()=>({con:'She answers carefully. Neutral.',pill:'neutral',pos:null})},
      {mark:'C',text:'Daz thinks it might be Okafor. You\'ve got geography with him.',fn:()=>{adj('priya',-15);return{con:'Her jaw tightens slightly.',pill:'trust −priya',pos:false}}},
      {mark:'D',text:'Hey. You alright.',fn:()=>{adj('priya',4);return{con:'Small warmth. No case progress.',pill:'trust +priya',pos:true}}},
@@ -178,7 +178,7 @@ const scenes=[
      {who:'maya',text:'(to you) — you talked to her today. what did you get?'},
    ],
    choices:[
-     {mark:'★ A',text:'Maybe. But if we go at her like she\'s already guilty and we\'re wrong — she shuts down. I\'ve got a better play.',star:true,fn:()=>{adj('maya',10);adj('daz',8);return{con:'Daz: "...what\'s the play." He\'s curious now.',pill:'trust +maya +daz',pos:true}}},
+     {mark:'A',text:'Maybe. But if we go at her like she\'s already guilty and we\'re wrong — she shuts down. I\'ve got a better play.',star:true,fn:()=>{adj('maya',10);adj('daz',8);return{con:'Daz: "...what\'s the play." He\'s curious now.',pill:'trust +maya +daz',pos:true}}},
      {mark:'B',text:'We don\'t know that yet. Let\'s not lock in.',fn:()=>({con:'Reasonable. Daz still thinks he\'s right.',pill:'neutral',pos:null})},
      {mark:'C',text:'Could be. But why would she? What\'s her motive.',fn:()=>({con:'Daz: "does she need one?" Neutral.',pill:'neutral',pos:null})},
      {mark:'D',text:'(say nothing — let Maya handle it)',fn:()=>{adj('maya',-6);return{con:'You opt out. Maya notices.',pill:'trust −maya',pos:false}}},
@@ -189,7 +189,7 @@ const scenes=[
      {who:'daz',text:'she\'s just kind of hard to talk to right. like it\'s not just me.'},
    ],
    choices:[
-     {mark:'★ A',text:'She\'s private. That\'s different from hard to talk to. You just haven\'t given her a reason to open up yet.',star:true,fn:()=>{adj('daz',15);return{con:'Daz goes quiet. Then: "...fair." He actually absorbs it.',pill:'trust +daz',pos:true}}},
+     {mark:'A',text:'She\'s private. That\'s different from hard to talk to. You just haven\'t given her a reason to open up yet.',star:true,fn:()=>{adj('daz',15);return{con:'Daz goes quiet. Then: "...fair." He actually absorbs it.',pill:'trust +daz',pos:true}}},
      {mark:'B',text:'She\'s fine once you get past the first layer.',fn:()=>{adj('daz',5);return{con:'Daz: "how many layers?" Mild curiosity.',pill:'trust +daz',pos:true}}},
      {mark:'C',text:'Maybe she just doesn\'t vibe with everyone.',fn:()=>({con:'He accepts it. Nothing changes.',pill:'neutral',pos:null})},
      {mark:'D',text:'Yeah she is a bit.',fn:()=>{adj('maya',-6);return{con:'Maya hears that.',pill:'trust −maya',pos:false}}},
@@ -201,7 +201,7 @@ const scenes=[
      {who:'priya',text:'I did it. The jamming. I built the device. I\'m not going to pretend I didn\'t.'},
    ],
    choices:[
-     {mark:'★ A',text:'I figured. And I figured you had a reason. Before you explain — I\'m not here to report you.',star:true,fn:()=>{adj('priya',18);return{con:'She goes still. Something releases in her.',pill:'trust +priya',pos:true}}},
+     {mark:'A',text:'I figured. And I figured you had a reason. Before you explain — I\'m not here to report you.',star:true,fn:()=>{adj('priya',18);return{con:'She goes still. Something releases in her.',pill:'trust +priya',pos:true}}},
      {mark:'B',text:'Okay. Walk me through it.',fn:()=>({con:'Factual exchange. She explains.',pill:'neutral',pos:null})},
      {mark:'C',text:'You know this could get serious for you.',fn:()=>{adj('priya',-12);return{con:'Her expression flattens. She calculates how much to share.',pill:'trust −priya',pos:false}}},
      {mark:'D',text:'How did you even build something like that.',fn:()=>{adj('priya',5);return{con:'An unexpected crack of personality.',pill:'trust +priya',pos:true}}},
@@ -214,8 +214,8 @@ const scenes=[
      {who:'priya',text:'I\'m still doing it alone.'},
    ],
    choices:[
-     {mark:'★ A',text:'If that camera stores locally, the footage goes somewhere. I can get into the system without touching his hardware. Give me 48 hours and you\'d have actual evidence.',star:true,fn:()=>{adj('priya',20);return{con:'She goes quiet. Then hands you the technical blueprint. You\'re collaborating now.',pill:'trust +priya',pos:true}}},
-     {mark:'★ B',text:'You\'ve been carrying this six weeks. That stops now. Tell me what you\'ve already tried and I\'ll pick up from there.',star:true,fn:()=>{adj('priya',18);return{con:'She hands over the thread. Different route, same outcome.',pill:'trust +priya',pos:true}}},
+     {mark:'A',text:'If that camera stores locally, the footage goes somewhere. I can get into the system without touching his hardware. Give me 48 hours and you\'d have actual evidence.',star:true,fn:()=>{adj('priya',20);return{con:'She goes quiet. Then hands you the technical blueprint. You\'re collaborating now.',pill:'trust +priya',pos:true}}},
+     {mark:'B',text:'You\'ve been carrying this six weeks. That stops now. Tell me what you\'ve already tried and I\'ll pick up from there.',star:true,fn:()=>{adj('priya',18);return{con:'She hands over the thread. Different route, same outcome.',pill:'trust +priya',pos:true}}},
      {mark:'C',text:'You shouldn\'t have to do this alone. That\'s what the team is for.',fn:()=>({con:'"The team." She\'s not sure they\'d know what to do. Neutral.',pill:'neutral',pos:null})},
      {mark:'D',text:'Have you thought about going to another teacher?',fn:()=>({con:'Dead end. She\'s already thought about it.',pill:'neutral',pos:null})},
    ]},
@@ -293,7 +293,7 @@ function showChoices(choices,sceneIdx){
   choices.forEach(c=>{
     const btn=document.createElement('button');
     btn.className='choice-btn';
-    btn.innerHTML=`<span class="mark ${c.star?'star-mark':''}">${c.mark}</span><span>${c.text}</span>`;
+    btn.innerHTML=`<span class="mark">${c.mark}</span><span>${c.text}</span>`;
     btn.onclick=()=>choose(c,sceneIdx);
     ch.appendChild(btn);
   });
