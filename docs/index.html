@@ -271,7 +271,9 @@ function finishOnboarding(){
 
 document.getElementById('onboarding-screen').addEventListener('click', startOnboardingChat);
 
-
+const trust={maya:50,daz:50,priya:50};
+const choiceLog=[];
+let rating=null,continueAnswer=null;
 
 function adj(c,d){trust[c]=Math.max(0,Math.min(100,trust[c]+d));}
 
