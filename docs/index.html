@@ -257,8 +257,9 @@ function continueOnboarding(){
 
 function showObContinueButton(){
   const ca=document.getElementById('ob-choice-area');
-  ca.style.display='block';
   ca.innerHTML='<button class="ob-continue-btn" onclick="finishOnboarding()">I&#39;m ready</button>';
+  ca.style.display='block';
+  ca.scrollIntoView({behavior:'smooth',block:'end'});
 }
 
 function finishOnboarding(){
