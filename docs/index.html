@@ -215,6 +215,10 @@ function startOnboardingChat(){
     }
   }
   setTimeout(next,300);
+  setTimeout(()=>{
+    const ch=document.getElementById('ob-choices');
+    if(ch.children.length===0){ showObChoices(); }
+  },6000);
 }
 
 function showObChoices(){
@@ -253,13 +257,24 @@ function continueOnboarding(){
     }
   }
   setTimeout(next,300);
+  // safety net: if the continue button hasn't appeared within 6s, force it
+  setTimeout(()=>{
+    const ca=document.getElementById('ob-choice-area');
+    if(!ca.innerHTML.includes('ob-continue-btn')){
+      showObContinueButton();
+    }
+  },6000);
 }
 
 function showObContinueButton(){
-  const ca=document.getElementById('ob-choice-area');
-  ca.innerHTML='<button class="ob-continue-btn" onclick="finishOnboarding()">I&#39;m ready</button>';
-  ca.style.display='block';
-  ca.scrollIntoView({behavior:'smooth',block:'end'});
+  try{
+    const ca=document.getElementById('ob-choice-area');
+    ca.innerHTML='<button class="ob-continue-btn" onclick="finishOnboarding()">I&#39;m ready</button>';
+    ca.style.display='block';
+  }catch(e){
+    console.log('SIGNAL onboarding error:',e.message);
+    finishOnboarding();
+  }
 }
 
 function finishOnboarding(){
